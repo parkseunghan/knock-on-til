@@ -1,9 +1,9 @@
-title: Hacker-Blog
-description: "A Jekyll Blog Theme For Hackers"
+title: Pack's Hacking Blog
+description: "A TIL Blog about Web Hacking by Pack"
 author:
-  name: "SomeHacker"
-  email: "someone@somewebsite.somedomain"
-  url: "https://parkseunghan.github.io"
+  name: "Pack"
+  email: "01seunghan@gmail.com"
+  url: ""
 
 baseurl: /
 
