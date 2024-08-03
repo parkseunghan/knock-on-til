@@ -191,8 +191,87 @@ SSL/TLS 인증서를 사용해 서버의 신원 검증
 
 |
 
+# HTTP 헤더, 바디의 구조
+
+HTTP 요청/응답 메시지는 크게 세 부분으로 구성됨  
+
+시작줄(start line)
+
+*헤더(header)*
+
+*바디(body)*
+
+|
+
+## HTTP `요청(request)` 메시지 구조
+
+### 1. 시작줄 (Start Line)
+
+요청 메서드, 요청 대상(URI), HTTP 버전 포함
+
+```js
+GET /index.html HTTP/1.1
+```
+
+|
+
+### 2. 헤더 (Headers)
+
+요청에 대한 메타데이터 포함
+
+각 헤더는 "name:value" 로 이루어져 있음
+
+```js
+Host: war.knock-on.org:10001
+User-Agent: bot
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 20
+Cookie: A=a
+```
+
+|
+
+### 3. 공백 줄 (Blank Line)
+
+헤더와 바디를 구분하는 빈 줄
+
+|
+
+### 4. 바디(Body)
+
+선택적으로 포함됨
+
+주로 POST, PUT 등의 메서드에서 서버로 전송할 데이터를 포함
+
+```js
+request=get-flag
+name=Pack&age=999
+```
+
+### 예
+
+```js
+POST / HTTP/1.1
+Host: war.knock-on.org:10001
+User-Agent: bot
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 20
+Cookie: API_KEY=h3ll0_Pack
+
+request=get-flag
+```
+
+|
+
+## HTTP `응답(response)` 메시지 구조
+
+### 1. 상태줄 (Status Line)
 
 
 
-
+---
+|
+# HTTP method
+# HTTP 상태코드
+# SSL인증서
 
