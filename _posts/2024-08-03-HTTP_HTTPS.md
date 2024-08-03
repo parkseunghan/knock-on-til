@@ -267,11 +267,115 @@ request=get-flag
 
 ### 1. 상태줄 (Status Line)
 
+HTTP 버전, 상태 코드, 상태 메시지 포함
 
+```js
+HTTP/1.1 200 OK
+```
+
+|
+
+### 2. 헤더
+
+응답에 대한 메타데이터 포함
+
+```js
+Content-Type: text/html; charset=UTF-8
+Content-Length: 138
+```
+
+|
+
+### 3. 공백 줄
+
+헤더와 바디를 구분하는 빈 줄
+
+|
+
+### 4. 바디
+
+요청에 대한 실제 응답 데이터 포함
+
+```js
+<html>
+    <head>
+        <title>Example</title>
+    </head>
+    <body>
+        <h1>Hello, World!</h1>
+    </body>
+</html>
+```
+
+|
+
+### 예
+
+```js
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+Content-Length: 138
+
+<html>
+    <head>
+        <title>HTTP Response</title>
+    </head>
+    <body>
+        <h1>Hello, World!</h1>
+    </body>
+</html>
+```
+
+|
+
+## 헤더 종류
+
+### **`일반 헤더 (General Headers)`**
+
+요청 및 응답 모두에 적용
+
+> Cache-Control, Connection, Date, Pragma, Trailer, Transfer-Encoding, Upgrade, Via, Warning
+
+|
+
+### **`요청 헤더 (Request Headers)`**
+
+클라이언트가 서버로 보내는 요청에 대한 정보를 포함
+
+> Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Expect, From, Host, If-Match, If-Modified-Since, If-None-Match, If-Range, If-Unmodified-Since, Max-Forwards, Proxy-Authorization, Range, Referer, TE, User-Agent
+
+|
+
+### **`응답 헤더 (Response Headers)`**
+
+서버가 클라이언트로 보내는 응답에 대한 정보를 포함
+
+> Accept-Ranges, Age, ETag, Location, Proxy-Authenticate, Retry-After, Server, Vary, WWW-Authenticate
+
+|
+
+### **`엔터티 헤더 (Entity Headers)`**
+
+요청 또는 응답의 본문에 대한 정보를 포함
+
+> Allow, Content-Encoding, Content-Language, Content-Length, Content-Location, Content-MD5, Content-Range, Content-Type, Expires, Last-Modified
+
+|
+
+## 바디 내용
+
+**`요청 바디`**: 주로 POST, PUT 등의 메서드에서 사용되며, 폼 데이터, JSON, XML 등의 형식으로 데이터를 포함할 수 있음
+
+|
+
+**`응답 바디`**: 서버가 클라이언트에게 보내는 실제 데이터로, HTML, JSON, XML, 이미지 등 다양한 형식이 될 수 있음
+
+|
 
 ---
+
 |
+
 # HTTP method
 # HTTP 상태코드
 # SSL인증서
-
