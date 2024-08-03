@@ -377,5 +377,296 @@ Content-Length: 138
 |
 
 # HTTP method
+
+주요 메서드
+
+## **`GET`**
+
+서버에서 지정된 리소스를 요청할 때 사용
+
+데이터가 URL에 포함됨
+
+서버의 리소스를 변경하지 않음
+
+|
+
+### 특징
+
+캐싱 가능
+
+브라우저 히스토리에 남음
+
+URL 길이에 제한이 있을 수 있음
+
+데이터가 *URL에 노출*됨
+
+### 예
+
+```js
+GET / HTTP/1.1
+Host: war.knock-on.org:10001
+```
+
+|
+
+## **`POST`**
+
+서버에 데이터를 제출할 때 사용
+
+폼 데이터 제출, 파일 업로드 등에 사용
+
+|
+
+### 특징
+
+캐싱 불가
+
+브라우저 히스토리에 남지 않음
+
+URL 길이 제한 없음
+
+데이터가 *요청 본문(Request Body)* 에 포함됨
+
+|
+
+### 예
+
+```js
+POST / HTTP/1.1
+Host: war.knock-on.org:10001
+User-Agent: bot
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 20
+Cookie: API_KEY=h3ll0_Pack
+
+request=get-flag
+```
+
+|
+
+## **`PUT`**
+
+서버에 리소스를 생성하거나 업데이트할 때 사용
+
+지정된 URL에 데이터가 저장됨
+
+|
+
+### 특징
+
+멱등성 (동일한 요청을 여러 번 수행해도 결과가 같음)
+
+데이터가 *요청 본문(Request Body)* 에 포함됨
+
+### 예
+
+```js
+PUT /resource/1 HTTP/1.1
+Host: war.knock-on.org:10001
+Content-Type: application/json
+
+{"request": "get-flag"}
+```
+
+|
+
+## **`DELETE`**
+
+지정된 리소스를 삭제할 때 사용
+
+|
+
+### 특징
+
+멱등성
+
+|
+
+### 예
+
+```js
+DELETE /resource/1 HTTP/1.1
+Host: war.knock-on.org:10001
+```
+
+|
+
+## **`PATCH`**
+
+리소스의 일부를 업데이트할 때 사용
+
+|
+
+### 특징
+
+부분 업데이트
+
+|
+
+### 예
+
+```js
+PATCH /resource/1 HTTP/1.1
+Host: war.knock-on.org:10001
+Content-Type: application/json
+
+{"request": "get-new-flag"}
+```
+
+|
+
+## **`HEAD`**
+
+GET과 유사하지만, 서버는 *응답 본문(Response Body)*을 반환하지 않고 *HTTP 헤더*만 가져옴
+
+|
+
+### 특징
+
+*응답 본문(Response Body)* 없음
+
+리소스의 메타데이터 확인에 유용
+
+|
+
+### 예
+
+```js
+HEAD /index.html HTTP/1.1
+Host: war.knock-on.org:10001
+
+```
+
+|
+
+## **`OPTIONS`**
+
+서버에서 지원하는 메서드를 확인할 때 사용
+
+|
+
+### 특징
+
+*CORS(Cross-Origin Resource Sharing)* 설정 확인에 유용
+
+|
+
+### 예
+
+```js
+OPTIONS /resource/1 HTTP/1.1
+Host: war.knock-on.org:10001
+```
+
+## **`CONNECT`**
+
+프록시 서버를 통해 터널링을 설정할 때 유용
+
+주로 SSL(HTTPS) 연결에 사용됨
+
+|
+
+### 예
+
+```js
+CONNECT war.knock-on.org:443 HTTP/1.1
+Host: war.knock-on.org
+```
+
+|
+
+## **`TRACE`**
+
+서버에서 받은 요청을 그대로 반환할 때 사용
+
+디버깅 목적으로 사용
+
+### 예
+
+```js
+TRACE /resource/1 HTTP/1.1
+Host: war.knock-on.org:10001
+```
+
+|
+
+---
+
+|
+
 # HTTP 상태코드
+
+HTTP 상태 코드는 클라이언트가 서버에 보낸 요청의 결과를 나타내는 3자리 숫자
+
+웹 브라우저와 서버 간의 통신 상태를 나타냄
+
+*1XX ~ 5XX*의 5가지 클래스로 구분됨. 첫 번째 자리로 클래스 구분
+
+|
+
+## 1xx (정보)
+
+**`100 Continue`**: 서버가 요청을 잘 받았고, 클라이언트가 계속해서 요청을 보내도 됨
+
+**`101 Switching Protocols`**: 클라이언트가 프로토콜 변경을 요청, 서버가 이를 승인하여 프로토콜을 변경할 것임
+
+|
+
+## 2xx (성공)
+
+**`200 OK`**: 요청이 성공적으로 처리됨
+
+**`201 Created`**: 요청이 성공적, 새로운 리소스가 생성됨
+
+**`202 Accepted`**: 요청이 접수됐지만, 처리가 안됨
+
+**`204 No Content`**: 요청이 성공적, 반환할 콘텐츠 없음
+
+|
+
+## 3xx (리다이렉션)
+
+301 Moved Permanently: 요청한 리소스가 영구적으로 이동되었음을 나타냄. 새로운 URL이 응답에 포함됨
+
+302 Found: 요청한 리소스가 임시적으로 다른 위치에 있음을 나타냄. 클라이언트는 다른 URL을 사용해 요청을 이어나가야 함
+
+304 Not Modified: 요청한 리소스가 수정되지 않았음을 의미. 클라이언트는 캐시된 버전을 사용해야 함
+
+|
+
+## 4xx (클라이언트 오류)
+
+400 Bad Request: 서버가 요청을 이해할 수 없거나 잘못된 요청임
+
+401 Unauthorized: 인증이 필요하며, 인증 정보가 없거나 잘못됨
+
+403 Forbidden: 서버가 요청을 이해했으나, 권한이 없어 요청을 거부함
+
+404 Not Found: 요청한 리소스를 찾을 수 없음
+
+405 Method Not Allowed: 요청한 메서드가 리소스에서 허용되지 않음
+
+|
+
+## 5xx (서버 오류)
+
+500 Internal Server Error: 서버에서 요청을 처리하는 동안 오류가 발생함
+
+501 Not Implemented: 서버가 요청을 수행할 수 있는 기능을 갖추지 않음
+
+502 Bad Gateway: 서버가 게이트웨이, 또는 프록시로 동작하는 동안 잘못된 응답을 받았음
+
+503 Service Unavailable: 서버가 일시적으로 과부하 상태이거나, 유지보수 중임
+
+504 Gateway Timeout: 게이트웨이, 또는 프록시 서버가 지정된 시간 내에 응답을 받지 못했음
+
+|
+
+[상태 관련 코드 주요 RFC 문서(RFC 7231)](https://datatracker.ietf.org/doc/html/rfc7231#section-6)
+
+
+---
+
+|
+
 # SSL인증서
