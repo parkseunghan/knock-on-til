@@ -1,5 +1,5 @@
 ---
-title: pre.Web(1주차)-HTTP, HTTPS-도전
+title: pre.Web(1주차)-HTTP, HTTPS-Challenge
 published: true
 ---
 
