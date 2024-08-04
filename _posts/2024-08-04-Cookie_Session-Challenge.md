@@ -31,10 +31,10 @@ nid_buk
 nid_slevel
 ```
 
-- NM_srt_chzzk
-- PM_CK_loc
-+ nid_buk
-+ nid_slevel
+| - NM_srt_chzzk
+| - PM_CK_loc
+| + nid_buk
+| + nid_slevel
 
 |
 
@@ -55,12 +55,12 @@ nid_inf
 nid_slevel
 ```
 
-+ NM_srt_chzzk
-+ PM_CK_loc
-+ NID_AUT
-+ NID_JKL
-+ NID_SES
-+ nid_inf
+| + NM_srt_chzzk
+| + PM_CK_loc
+| + NID_AUT
+| + NID_JKL
+| + NID_SES
+| + nid_inf
 
 |
 
@@ -78,10 +78,10 @@ nid_buk
 nid_slevel
 ```
 
-+ NID_AUT
-+ NID_JKL
-+ NID_SES
-+ nid_inf 만 생기고
+| + NID_AUT
+| + NID_JKL
+| + NID_SES
+| + nid_inf 만 생기고
 
 1-3-2. 등록 버튼을 클릭(네이버 홈)
 
@@ -97,8 +97,8 @@ nid_buk
 nid_sl
 ```
 
-+ NM_srt_chzzk
-+ PM_CK_loc
+| + NM_srt_chzzk
+| + PM_CK_loc
 
 
 ## 2. 크롬 게스트 모드로 접속하여 ID와 PW를 처음 입력하는 상황
@@ -125,8 +125,8 @@ NNB
 nid_slevel
 ```
 
-- PM_CK_loc
-+ nid_slevel
+| - PM_CK_loc
+| + nid_slevel
 
 |
 
@@ -144,10 +144,10 @@ nid_inf
 nid_slevel
 ```
 
-+ NID_AUT
-+ NID_JKL
-+ NID_SES
-+ nid_inf
+| + NID_AUT
+| + NID_JKL
+| + NID_SES
+| + nid_inf
 
 |
 
@@ -169,8 +169,8 @@ nid_inf
 nid_slevel
 ```
 
-+ NM_srt_chzzk
-+ PM_CK_loc
+| + NM_srt_chzzk
+| + PM_CK_loc
 
 |
 

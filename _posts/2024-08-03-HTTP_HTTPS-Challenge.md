@@ -12,7 +12,7 @@ published: true
 
 **`-H`** 또는 **`--header <header>`**: 특정 헤더를 추가하거나 변경.
 
--**`d`** 또는 **`--data <data>`**: POST 요청에 데이터 전송. @를 사용하여 파일에서 데이터를 읽을 수 있음.
+**`-d`** 또는 **`--data <data>`**: POST 요청에 데이터 전송. @를 사용하여 파일에서 데이터를 읽을 수 있음.
 
 **`-F`** 또는 **`--form <name=content>`**: multipart/form-data 형식으로 데이터 전송 (파일 업로드 등).
 
