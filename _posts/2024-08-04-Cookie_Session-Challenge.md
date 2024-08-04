@@ -1,5 +1,5 @@
 ---
-title: [1주차 TIL] KnockOn Bootcamp - Cookie & Session-Challenge
+title: "[1주차 TIL] KnockOn Bootcamp - Cookie & Session (Challenge)"
 published: true
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: [1주차 TIL] KnockOn Bootcamp - HTTP, HTTPS - Challenge
+title: "[1주차 TIL] KnockOn Bootcamp - HTTP / HTTPS (Challenge)"
 published: true
 ---
 
