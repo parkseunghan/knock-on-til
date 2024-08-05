@@ -456,7 +456,11 @@ a[target="_blank"] {
 
 ## 기본 문법
 
-**`변수 선언`**: 데이터를 저장하는 데 사용(var, let, const)
+### 1. 변수 선언
+
+데이터를 저장하는 데 사용(var, let, const)
+
+|
 
 ```js
 var name = "Pack"; // 전역 또는 함수 스코프
@@ -466,7 +470,7 @@ const pi = 3.14; // 블록 스코프, 상수, 재할당 불가
 
 |
 
-**`데이터 타입`**
+### 2. 데이터 타입
 
 ```js
 let num = 42;               // 숫자 (Number)
@@ -484,9 +488,9 @@ function greet() { console.log("Hello!"); } // 함수 (Function)
 
 |
 
-**`연산자`**
+### 3. 연산자
 
-`산술 연산자`: +, -, *, /, %
+**`산술 연산자`**: +, -, *, /, %
 
 ```js
 // + (덧셈)
@@ -508,7 +512,7 @@ let remainder = 5 % 2; // 1
 
 |
 
-`대입 연산자`: =, +=, -=, *=, /=
+**`대입 연산자`**: =, +=, -=, *=, /=
 
 ```js
 // = (대입)
@@ -533,7 +537,7 @@ x /= 2; // x는 5 (10 / 2)
 
 |
 
-`비교 연산자`: ==, ===, !=, !==, >, <, >=, <=
+**`비교 연산자`**: ==, ===, !=, !==, >, <, >=, <=
 
 ```js
 // == (동등): 값이 같은지 확인. 형 변환을 허용
@@ -563,7 +567,7 @@ console.log(5 <= 3); // false
 
 |
 
-`논리 연산자`: &&, ||, !
+**`논리 연산자`**: &&, ||, !
 
 ```js
 // && (논리 AND): 두 조건이 모두 true일 때 ture
@@ -574,6 +578,212 @@ console.log(true || false); // true
 
 // ! (논리 NOT): 조건의 true/false를 반전시킴
 console.log(!true); // false
+```
+
+|
+
+### 4. 조건문
+
+코드의 흐름 제어
+
+|
+
+```js
+let age = 20;
+
+if (age >= 18) {
+    console.log("Adult");
+} else {
+    console.log("Minor");
+}
+```
+
+|
+
+### 5. 반복문
+
+특정 코드를 여러 번 실행
+
+|
+
+**`for 루프`**
+
+```js
+for (let i = 0; i < 5; i++) {
+    console.log(i);
+}
+```
+
+|
+
+**`while 루프`**
+
+```js
+let i = 0;
+while (i < 5) {
+    console.log(i);
+    i++;
+}
+```
+
+|
+
+## 함수
+
+재사용 가능한 코드 블록
+
+|
+
+**`함수 선언`**
+
+```js
+function greet(name) {
+    return `Hello, ${name}!`;
+}
+```
+
+|
+
+**`함수 표현식`**
+
+```js
+const greet = function(name) {
+    return `Hello, ${name}!`;
+};
+```
+
+|
+
+**`화살표 함수`**
+
+```js
+const greet = (name) => `Hello, ${name}!`;
+```
+
+|
+
+## DOM 조작
+
+JavsScript를 사용해 웹 페이지의 요소를 조작
+
+|
+
+**`요소 선택`**
+
+```js
+const element = document.getElementById("myElement");
+const elements = document.getElementsByClassName("myClass");
+const element = document.querySelector(".myClass");
+const elements = document.querySelectorAll(".myClass");
+```
+
+|
+
+**`내용 변경`**
+
+```js
+element.textContent = "New content";
+element.innerHTML = "<p>New content</p>";
+```
+
+|
+
+**`속성 변경`**
+
+```js
+element.setAttribute("class", "newClass");
+element.id = "newId";
+```
+
+|
+
+**`스타일 변경`**
+
+```js
+element.style.color = "red";
+element.style.backgroundColor = "blue";
+```
+
+|
+
+**`이벤트 리스너 추가`**
+
+```js
+element.addEventListener("click", function() {
+    alert("Element clicked!");
+});
+```
+
+|
+
+## 사용 예
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Example</title>
+</head>
+<body>
+    <h1 id="header">Hello, World!</h1>
+    <button id="changeTextButton">Change Text</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
+```
+
+> HTML 코드
+
+|
+
+```js
+// 요소 선택
+const header = document.getElementById("header");
+const button = document.getElementById("changeTextButton");
+
+// 이벤트 리스너 추가
+button.addEventListener("click", function() {
+    header.textContent = "Text has been changed!";
+});
+```
+
+> JavaScript 코드
+
+|
+
+1. id가 changeTextButton인 버튼의 클릭을 감지
+
+2. 이벤트 리스너를 통해 클릭했을 때 동작 구현
+
+3. id가 header인 h1태그의 텍스트 내용 변경
+
+|
+
+## 내장 함수
+
+**`alert(message)`**: 메시지를 경고 창으로 표시
+
+**`console.log(message)`**: 메시지를 브라우저 콘솔에 로그
+
+**`setTimeout(function, milliseconds)`**: 일정 시간이 지난 후 함수를 실행
+
+**`setInterval(function, milliseconds)`**: 일정 시간 간격으로 함수를 반복 실행
+
+|
+
+```js
+alert("Hello, World!");
+
+console.log("Hello, World!");
+
+setTimeout(function() {
+    console.log("This will run after 2 seconds");
+}, 2000);
+
+setInterval(function() {
+    console.log("This will run every 2 seconds");
+}, 2000);
 ```
 
 |
