@@ -3,6 +3,8 @@ title: "[1주차 TIL] KnockOn Bootcamp - HTML, CSS, Javascript (Challenge)"
 published: true
 ---
 
+|
+
 # 자신을 소개하는 페이지를 작성해 봅시다(형식 자유)
 
 ```html
