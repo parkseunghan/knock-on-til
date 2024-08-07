@@ -461,3 +461,314 @@ greetPerson('Hello'); // Hello, Pack
 |
 
 # 룰렛 게임 완성하기
+
+## 구현
+
+**`startRoulette()`**
+
+1. values 범위 안에서 숫자 1씩 증가
+
+2. 실시간으로 바뀌는 숫자를 rouletteDisplay에 표시
+
+|
+
+## 필요 함수
+
+**`setInterval()`**: 일정 시간 간격마다 주기적으로 지정된 함수 실행
+
+```js
+const intervalId = setInterval(callback, delay, [arg1, arg2, ...]);
+```
+
+|
+
+`callback`: 주기적으로 실행할 함수
+
+`delay`: 함수 호출 시간 간격 설정. 밀리초(ms) 단위
+
+`[arg1, arg2, ...]`: (선택) 콜백 함수에 전달할 인수
+
+|
+
+```js
+function sayHello() {
+    console.log('Hello');
+}
+
+// 1초(1000ms)마다 sayHello 함수 실행
+const intervalId = setInterval(sayHello, 1000);
+```
+
+|
+
+**`clearInterval()`**: **'setInterval()'**에 의해 설정된 작업 중지
+
+```js
+clearInterval(intervalId);
+```
+
+|
+
+`intervalId`: **setInterval()**이 반환한 식별자. 이 식별자를 사용해 해당 인터벌을 중지
+
+|
+
+**사용 예**
+
+```js
+function sayHello() {
+    console.log('Hello');
+}
+
+// 1초(1000ms)마다 sayHello 함수를 실행
+const intervalId = setInterval(sayHello, 1000);
+
+// 5초 후에 인터벌을 중지
+setTimeout(() => {
+    clearInterval(intervalId);
+    console.log('인터벌 중지');
+}, 5000);
+```
+
+|
+
+**`필요 DOM 조작`**
+
+내용 변경
+
+```js
+element.textContent = "New content";
+element.innerHTML = "<p>New content</p>";
+```
+
+|
+
+## 룰렛 만들기 시작
+
+```js
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Roulette Game</title>
+    <script></script>
+  </head>
+  <body>
+    <div id="roulette">1</div>
+    <button id="stopButton">정지</button>
+
+    <script>
+      const values = [1, 2, 3, 4, 5, 6];
+
+      const rouletteDisplay = document.getElementById("roulette");
+
+      let intervalId = null;
+
+      let currentIndex = 0;
+
+      function startRoulette() {
+        intervalId = //interval 설정하기
+      }
+
+      document.getElementById("stopButton").addEventListener("click", () => {
+        clearInterval(intervalId);
+
+        alert("선택된 숫자: " + values[currentIndex]);
+      });
+
+      startRoulette();
+    </script>
+  </body>
+</html>
+```
+
+|
+
+## 과정 1. startRoulette() 구현
+
+### 1. setInterval()
+
+```js
+function startRoulette() {
+    intervalId = setInterval(() => { // callback: 화살표 함수 추가
+        // currentIndex 1씩 증가
+        // rouletteDisplay에 숫자 표시
+    }, 1000); // delay: 시간 추가
+}
+
+```
+
+> callback, delay 매개변수 추가
+
+|
+
+```js
+function startRoulette() {
+    intervalId = setInterval(() => { 
+        // currentIndex 1씩 증가
+        currentIndex = currentIndex + 1;
+
+        // rouletteDisplay에 숫자 표시
+    }, 1000); 
+}
+```
+
+> currentIndex가 1초에 1씩 증가
+
+|
+
+![currentIndex 구현](./assets/images/룰렛1.png)
+
+|
+
+- 1부터 6까지는 잘 나오는데 끝도 없이 커져, 그 다음 숫자부터는 undefined으로 나온다.
+
+- 7이 되면 다시 1로 돌아가게 만들어야 한다.
+
+|
+
+```js
+function startRoulette() {
+    intervalId = setInterval(() => {
+        // currentIndex 1씩 증가
+        currentIndex = (currentIndex) + 1 % 6;
+
+        // rouletteDisplay에 숫자 표시
+    }, 1000); 
+}
+```
+
+> 나머지 연산을 사용해 배열의 길이(6)로 나누어 7이 되면 1로 돌아가게 함
+
+|
+
+![currentIndex 구현](./assets/images/룰렛2.png)
+
+|
+
+- 오ㅋㅋ 1, 2, 3, 4, 5, 0, 다시 1, 2,... 순서로 잘 나옴
+
+- 인덱스는 4지만 선택된 숫자가 5인 이유는 배열의 인덱스가 0부터 시작하기 때문임. 0번째 배열 요소는 1, ..., 4번째 배열의 요소는 5가 됨
+
+|
+
+```js
+function startRoulette() {
+    intervalId = setInterval(() => { 
+        currentIndex = (currentIndex + 1) % 6;
+
+        // rouletteDisplay에 숫자 표시
+        rouletteDisplay.textContent = currentIndex;
+    }, 1000); 
+}
+```
+
+> 'element.textContent'를 사용해 DOM 조작
+
+> rouletteDisplay의 textContent를 currentIndex로 설정
+
+|
+
+![currentIndex 구현](./assets/images/룰렛3.png)
+
+- 웹에서 숫자도 잘 바뀐다. 근데 선택한 숫자랑 인덱스가 다르다.
+
+- 난 지금 배열의 인덱스를 출력하고 있기 때문이다. 인덱스 번호에 해당하는 요소를 출력해야된다!
+
+|
+
+```js
+function startRoulette() {
+    intervalId = setInterval(() => { 
+        currentIndex = (currentIndex + 1) % 6;
+
+        // rouletteDisplay에 숫자 표시
+        rouletteDisplay.textContent = values[currentIndex];
+    }, 1000); 
+}
+```
+
+> 배열의 요소가 출력되게 'values[currentIndex]'로 바꿈
+
+|
+
+![currentIndex 구현](./assets/images/룰렛4.png)
+
+- 진짜 잘됨!!
+
+|
+
+```js
+function startRoulette() {
+    intervalId = setInterval(() => { 
+        currentIndex = (currentIndex + 1) % values.lengh;
+        rouletteDisplay.textContent = values[currentIndex];
+    }, 50); 
+}
+```
+
+> 나누는 숫자 부분을 배열의 크기로 일반화하기 위해 values.lengh로 수정!
+
+> delay도 빠르게 50으로 변경
+
+|
+
+## 최종 코드
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Roulette Game</title>
+    <script></script>
+</head>
+
+<body>
+    <div id="roulette">1</div>
+    <button id="stopButton">멈춰!</button>
+
+    <script>
+        const values = [1, 2, 3, 4, 5, 6];
+
+        const rouletteDisplay = document.getElementById("roulette");
+
+        let intervalId = null;
+
+        let currentIndex = 0;
+
+
+        function startRoulette() {
+            intervalId = setInterval(() => {
+                currentIndex = (currentIndex + 1) % 6;
+                rouletteDisplay.textContent = values[currentIndex];
+
+                fetch('/updateIndex', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ currentIndex })
+                });
+            }, 50);
+        }
+
+        document.getElementById("stopButton").addEventListener("click", () => {
+            clearInterval(intervalId);
+
+            alert("선택된 숫자: " + values[currentIndex]);
+        });
+
+        startRoulette();
+    </script>
+</body>
+
+</html>
+```
+
+> 완.
+
+|
+
+---
+
+|
