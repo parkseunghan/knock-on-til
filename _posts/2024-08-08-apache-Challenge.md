@@ -511,49 +511,49 @@ ping 192.168.149.137
 
 AWS 가입 후 EC2 서비스 검색 후 들어가기
 
-1. 서울로 지역 변경
+- 서울로 지역 변경
 
-2. 인스턴트 시작
+- 인스턴트 시작
 
 |
 
 ![유형 선택](./assets/images/AWS_EC2_2.png)
 
-1. Ubuntu 선택
+- Ubuntu 선택
 
-2. Ubuntu Server 프리티어 사용 가능으로 선택
+- Ubuntu Server 프리티어 사용 가능으로 선택
 
-3. 인스턴스 유형 프리티어 사용 가능으로 선택
+- 인스턴스 유형 프리티어 사용 가능으로 선택
 
-4. 새 키 페어 생성
+- 새 키 페어 생성
 
 |
 
 ![키 페어 생성](./assets/images/AWS_EC2_3.png)
 
-1. RSA
+- RSA 선택
 
-2. .pem
+- .pem 선택
 
-3. 키 페어 생성
+- 키 페어 생성
 
 |
 
 ![보안 그룹 확인 및 인스턴트 시작](./assets/images/AWS_EC2_4.png)
 
-보안 그룹을 확인하고(이따 설정할 거 있음), 인스턴트 시작
+- 보안 그룹을 확인하고(이따 설정할 거 있음), 인스턴트 시작
 
 |
 
 ![인스턴트 생성 완](./assets/images/AWS_EC2_5.png)
 
-인스턴트가 생성되면 모든 인스턴트 보기 클릭
+- 인스턴트가 생성되면 모든 인스턴트 보기 클릭
 
 |
 
 ![인스턴트 클릭](./assets/images/AWS_EC2_6.png)
 
-생성된 인스턴트 클릭
+- 생성된 인스턴트 클릭
 
 |
 
@@ -561,27 +561,27 @@ AWS 가입 후 EC2 서비스 검색 후 들어가기
 
 ![보안 그룹](./assets/images/AWS_EC2_7.png)
 
-왼쪽 목록에 보안 그룹 클릭
+- 왼쪽 목록에 보안 그룹 클릭
 
 |
 
 ![보안 그룹 선택](./assets/images/AWS_EC2_8.png)
 
-아까 봐둔 보안 그룹에 해당하는 거 클릭
+- 아까 봐둔 보안 그룹에 해당하는 거 클릭
 
 |
 
 ![인바운드 규칙 편집](./assets/images/AWS_EC2_9.png)
 
-인바운드 규칙 편집 클릭
+- 인바운드 규칙 편집 클릭
 
 |
 
 ![규칙 추가](./assets/images/AWS_EC2_10.png)
 
-규칙 추가 누르고
+- 규칙 추가 누르고
 
-HTTP, HTTPS 생성 후 규칙 저장
+- HTTP, HTTPS 생성 후 규칙 저장
 
 |
 
@@ -589,19 +589,19 @@ HTTP, HTTPS 생성 후 규칙 저장
 
 ![연결](./assets/images/AWS_EC2_11.png)
 
-다시 인스턴스로 돌아와서 연결 클릭
+- 다시 인스턴스로 돌아와서 연결 클릭
 
 |
 
 ![보안 그룹](./assets/images/AWS_EC2_12.png)
 
-SSH 클라이언트 클릭
+- SSH 클라이언트 클릭
 
-1. *예: ssh -i "~.pem" ubuntu@~.compute.amazonaws.com* 부분 복사
+-  *예: ssh -i "~.pem" ubuntu@~.compute.amazonaws.com* 부분 복사
 
-2. 터미널에서, 이전에 다운받은 "~.pem" 키 디렉토리로 이동
+-  터미널에서, 이전에 다운받은 "~.pem" 키 디렉토리로 이동
 
-3. 붙여넣기
+-  붙여넣기
 
 ```sh
 ssh -i "~.pem" ubuntu@~.compute.amazonaws.com
