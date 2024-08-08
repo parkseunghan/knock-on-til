@@ -641,11 +641,11 @@ function startRoulette() {
 
 |
 
-![currentIndex 구현](./assets/images/룰렛2.png)
+![currentIndex 구현2](./assets/images/룰렛2.png)
 
 |
 
-- 오ㅋㅋ 1, 2, 3, 4, 5, 0, 다시 1, 2,... 순서로 잘 나옴
+- 1, 2, 3, 4, 5, 0, 다시 1, 2,... 순서로 잘 나옴
 
 - 인덱스는 4지만 선택된 숫자가 5인 이유는 배열의 인덱스가 0부터 시작하기 때문임. 0번째 배열 요소는 1, ..., 4번째 배열의 요소는 5가 됨
 
@@ -668,7 +668,7 @@ function startRoulette() {
 
 |
 
-![currentIndex 구현](./assets/images/룰렛3.png)
+![rouletteDisplay 숫자 표시 구현](./assets/images/룰렛3.png)
 
 - 웹에서 숫자도 잘 바뀐다. 근데 선택한 숫자랑 인덱스가 다르다.
 
@@ -691,7 +691,7 @@ function startRoulette() {
 
 |
 
-![currentIndex 구현](./assets/images/룰렛4.png)
+![rouletteDisplay 숫자 표시 구현2](./assets/images/룰렛4.png)
 
 - 진짜 잘됨!!
 

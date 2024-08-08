@@ -193,8 +193,316 @@ LEMP (Linux, Nginx, MySQL, PHP) 스택에서 많이 사용
 
 # Tomcat의 대해 이해하기
 
+오픈 소스 서블릿 컨테이너(Servlet Container) 및 웹 서버
+
+주로 Java 기반 웹 애플리케이션을 실행하는 데 사용
+
+|
+
+## 기능
+
+**`서블릿 컨테이너(Servlet Container)`**: 서블릿(Servlet)과 JSP(JavaServer Pages)를 실행할 수 있는 환경을 제공
+
+클라이언트의 요청을 받아 서블릿과 JSP로 처리하고, 응답을 반환
+
+|
+
+**`웹 서버(Web Server)`**: HTTP 웹 서버로서 정적 콘텐츠(HTML, CSS, 이미지 등)를 제공
+
+웹 클라이언트로부터 HTTP 요청을 받아 정적 및 동적 콘텐츠를 제공
+
+|
+
+**`Java EE 지원`**: Java EE(Enterprise Edition)의 일부 사양을 지원하여, 엔터프라이즈급 웹 애플리케이션을 실행 가능
+
+서블릿, JSP, JDBC, JNDI 등 Java EE 사양의 일부를 구현하여 웹 애플리케이션 개발을 지원
+
+|
+
+## 구조
+
+Tomcat은 모듈식 구조로 설계됨
+
+|
+
+**`Catalina`**: Tomcat의 서블릿 컨테이너
+
+서블릿과 JSP를 실행하는 핵심 엔진
+
+클라이언트 요청을 처리하고, 서블릿을 로드하고 실행하며, 응답을 생성
+
+|
+
+**`Coyote`**: Tomcat의 커넥터(Connector)
+
+HTTP/1.1 프로토콜을 처리하는 HTTP 커넥터
+
+클라이언트와 서버 간의 네트워크 통신을 관리하고, HTTP 요청과 응답을 처리
+
+|
+
+**`Jasper`**: Tomcat의 JSP 컴파일러
+
+JSP 파일을 서블릿으로 변환
+
+JSP 페이지를 컴파일하여 실행 가능한 서블릿 코드로 변환
+
+|
+
+**`Cluster`**:Tomcat의 클러스터링 모듈
+
+여러 Tomcat 인스턴스 간에 세션 상태를 공유
+
+로드 밸런싱과 세션 복제를 통해 고가용성과 확장성을 제공
+
+|
+
+## 설정 파일
+
+**`server.xml`**: Tomcat의 주요 구성 설정을 정의하는 파일
+
+커넥터, 엔진, 호스트, 컨텍스트 등을 설정
+
+|
+
+```xml
+<Connector port="8080" protocol="HTTP/1.1"
+           connectionTimeout="20000"
+           redirectPort="8443" />
+```
+
+|
+
+**`web.xml`**: 웹 애플리케이션의 배포 설명자(Deployment Descriptor)
+
+각 웹 애플리케이션의 설정을 정의
+
+서블릿 매핑, 필터, 리스너 등을 설정
+
+|
+
+```xml
+<servlet>
+    <servlet-name>exampleServlet</servlet-name>
+    <servlet-class>com.example.ExampleServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>exampleServlet</servlet-name>
+    <url-pattern>/example</url-pattern>
+</servlet-mapping>
+```
+
+|
+
+**`context.xml`**: 개별 웹 애플리케이션의 컨텍스트 설정을 정의
+
+데이터 소스, 자바빈즈, 환경 변수 등을 설정
+
+|
+
+```xml
+<Context path="/example" docBase="example" reloadable="true">
+    <Resource name="jdbc/ExampleDB" auth="Container"
+              type="javax.sql.DataSource" maxActive="100" maxIdle="30" maxWait="10000"
+              username="dbuser" password="dbpassword" driverClassName="com.mysql.jdbc.Driver"
+              url="jdbc:mysql://localhost:3306/exampledb"/>
+</Context>
+```
+
+|
+
+## 동작 원리
+
+### 1. 클라이언트 요청 수신
+
+클라이언트가 웹 브라우저를 통해 HTTP 요청을 보냄
+
+|
+
+### 2. Coyote 커넥터 처리
+
+Coyote 커넥터가 HTTP 요청을 수신하고 처리
+
+|
+
+### 3. Catalina 엔진 실행
+
+Catalina 서블릿 컨테이너가 요청을 받아 서블릿 또는 JSP로 처리
+
+|
+
+### 4. Jasper 컴파일
+
+JSP 요청의 경우, Jasper가 JSP를 서블릿으로 컴파일
+
+|
+
+### 5. 서블릿 실행 및 응답 생성
+
+서블릿이 비즈니스 로직을 처리하고, 응답을 생성
+
+|
+
+### 6. 클라이언트 응답 반환
+
+생성된 응답이 Coyote 커넥터를 통해 클라이언트에게 반환됨
+
+|
+
+---
+
+|
 
 # apache 로컬환경 or 클라우드서버 에서 설치 후 실습해보기
+
+## 로컬 환경 설치
+
+```sh
+# 1. 패키지 목록 업데이트
+sudo apt update
+
+# 2. Apache 설치
+sudo apt install apache2
+
+# 3. 실행 확인
+sudo systemctl status apache2
+```
+
+|
+
+![아파치 로컬 실행](./assets/images/아파치1.png)
+
+- "Active: active"로 아파치 웹서버 서비스가 실행되는 걸 확인
+
+- <http://localhost>로 접속. "Apache2 Default Page"가 뜸. 설치가 성공적으로 이루어짐
+
+|
+
+## 실습
+
+```sh
+# 설정 파일
+
+# Apache 설정 파일
+sudo vi /etc/apache2/sites-available/000-default.conf
+
+--- vi
+# 000-default.conf 파일 내부
+
+# 루트 디렉토리 확인
+DocumentRoot /var/www/html
+---
+
+# 수정했다면, 완료 후
+sudo systemctl restart apache2
+# 또는
+sudo service apache2 restart
+```
+
+|
+
+![아파치 설정 파일](./assets/images/아파치2.png)
+
+|
+
+### UFW 방화벽 설정 - HTTP, HTTPS 포트 개방
+
+```sh
+# UFW에 등록된 프로그램 목록 확인
+sudo ufw app list
+```
+
+|
+
+![ufw app list](./assets/images/아파치3.png)
+
+> 80포트: Apache
+
+> 80, 443포트: Apache Full
+
+> 443포트: Apache Secure
+
+|
+
+```sh
+# 80, 443 포트 개방
+sudo ufw allow 'Apache Full'
+```
+
+|
+
+![아파치 포트 개방](./assets/images/아파치4.png)
+
+- ufw가 활성화 되지 않아 포트가 열리지 않는다
+
+- ufw를 활성화 하자
+
+|
+
+```sh
+# ufw 활성화
+sudo ufw enable
+```
+
+|
+
+![ufw 활성화](./assets/images/아파치5.png)
+
+- 이전에 이미 룰을 추가했기 때문에 활성화만 해주면 된다.
+
+|
+
+### 페이지 수정
+
+```sh
+# 로컬 페이지
+sudo vi /var/www/html/index.html 
+
+# 수정 후 서버 재시작
+sudo systemctl restart apache2
+```
+
+> 로컬 접속시 나타나는 페이지는 /var/www/html에 위치한 index.html파일
+
+|
+
+### 외부 접속 확인
+
+```sh
+# ubuntu
+
+# ifconfig 명령어 사용을 위해 툴 설치
+sudo apt install net-tools
+
+# 우분투 ip 확인
+ifconfig
+```
+
+|
+
+![ip 확인](./assets/images/아파치6.png)
+
+|
+
+```sh
+# windows
+
+# ubuntu의 ip로 핑 보내보기
+ping 192.168.149.137
+```
+
+|
+
+![해당 ip로 접속](./assets/images/아파치7.png)
+
+> 192.168.149.137로 접속.
+
+|
+
+---
+
+|
+
 
 
 
