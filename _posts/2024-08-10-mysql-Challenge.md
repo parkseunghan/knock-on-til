@@ -241,6 +241,7 @@ sudo apt install mysql-server
 # 보안 설정
 sudo mysql_secure_installation
 
+
 # MySQL 접속
 sudo mysql -u root -p
 ```
