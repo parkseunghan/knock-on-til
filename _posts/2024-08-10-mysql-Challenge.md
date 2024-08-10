@@ -410,12 +410,14 @@ CREATE TABLE orders (
 -- 샘플 데이터 삽입
 INSERT INTO customers (name, email) VALUES ('Park', 'Park@example.com');
 INSERT INTO customers (name, email) VALUES ('Lee', 'Lee@example.com');
-INSERT INTO customers (name, email) VALUES ('Kim', 'Lee@example.com');
+INSERT INTO customers (name, email) VALUES ('Kim', 'Kim@example.com');
+INSERT INTO customers (name, email) VALUES ('Choi', 'Choi@example.com');
 
-INSERT INTO orders (customer_id, order_date, amount) VALUES (1, '2024-08-10', 10);
-INSERT INTO orders (customer_id, order_date, amount) VALUES (2, '2024-08-11', 20);
+
+INSERT INTO orders (customer_id, order_date, amount) VALUES (1, '2024-08-10', 10.5);
+INSERT INTO orders (customer_id, order_date, amount) VALUES (2, '2024-08-11', 20.1);
 INSERT INTO orders (customer_id, order_date, amount) VALUES (1, '2024-08-12', 400);
-INSERT INTO orders (customer_id, order_date, amount) VALUES (4, '2024-08-13', 50);
+INSERT INTO orders (customer_id, order_date, amount) VALUES (3, '2024-08-14', 50);
 ```
 
 ## INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN
@@ -441,11 +443,11 @@ INNER JOIN customers ON customers.id = orders.customer_id;
 
 |
 
-![](./assets/images/join1.png)
+![INNER JOIN 결과](./assets/images/join1.png)
 
-- customers의 id와 orders의 id가 일치하는 행을 결합
+- INNER JOIN 결과
 
-- 결합된 결과에서 customers 테이블의 name, email 그리고 orders 테이블의 order_date, amount를 선택하여 반환
+- customers.id와 orders.customer_id가 일치하는 행만 반환됨
 
 |
 
@@ -471,13 +473,13 @@ LEFT JOIN orders ON customers.id = orders.customer_id;
 
 |
 
-![](./assets/images/join2.png)
+![LEFT JOIN 결과](./assets/images/join2.png)
 
 - LEFT JOIN 결과
 
-- (customers의 모든 행) + (orders테이블에서 customers의 id와 orders의 id가 일치하는 행) 반환
+- (customers의 모든 행) + (orders테이블에서 customers.id와 orders.customer_id가 일치하는 행) 반환
 
-- orders에 일치하는 데이터가 없으면 orders의 컬럼들은 NULL로 채워짐
+- orders에 일치하는 데이터가 없는 'Choi'의 orders 컬럼들은 NULL로 채워짐
 
 |
 
@@ -510,6 +512,8 @@ RIGHT JOIN orders ON customers.id = orders.customer_id;
 
 - customers에서 일치하는 데이터가 없는 컬럼들은 NULL로 채워짐
 
+- 현재 샘플 데이터의 외래 키 제약 조건에 의해 orders.customer_id는 반드시 customer.id 값 중 하나와 일치해야 하기 때문에 NULL 값을 발생할 데이터를 추가할 수 없음
+
 |
 
 ### FULL JOIN (FULL OUTER JOIN)
@@ -538,9 +542,14 @@ RIGHT JOIN orders ON customers.id = orders.customer_id;
 
 - FULL JOIN 결과
 
+- 두 테이블의 모든 행을 반환하였음
 
+- LEFT JOIN과 마찬가지로 'Choi'는 orders에서 일치하는 데이터가 없어 orders 컬럼들은 NULL로 채워짐
 
+|
 
+---
 
+|
 
 # 데이터베이스 접근 제한, 사용자 권한 설정하기
