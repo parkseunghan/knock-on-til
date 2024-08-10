@@ -59,174 +59,7 @@ mysql -u username -p -h 192.168.149.137
 
 |
 
-# 사용자 권한 명령어 (GRANT, REVOKE, SHOW GRANTS, FLUSH PRIVILEGES)
-
-## GRANT: 권한 부여
-
-```sql
-GRANT privilege_type ON database_name.table_name TO 'username'@'host';
-
-
--- 예시
-GRANT SELECT, INSERT ON example.users TO 'newuser'@'localhost';
-```
-
-> newuser에게 example 데이터베이스의 users 테이블에 대한 SELECT, INSERT 권한을 부여
-
-|
-
-**`privilege_type`**: 부여할 권한 유형
-
-`ALL PRIVILEGES`: 모든 권한 부여
-
-`SELECT`: 테이블에서 데이터를 조회할 수 있는 권한
-
-`INSERT`: 테이블에 데이터를 삽입할 수 있는 권한
-
-`UPDATE`: 테이블의 데이터를 수정할 수 있는 권한
-
-`DELETE`: 테이블에서 데이터를 삭제할 수 있는 권한
-
-`CREATE`: 데이터베이스나 테이블을 생성할 수 있는 권한
-
-`DROP`: 데이터베이스나 테이블을 삭제할 수 있는 권한
-
-`INDEX`: 인덱스를 생성 및 삭제할 수 있는 권한
-
-`ALTER`: 테이블 구조를 변경할 수 있는 권한
-
-`GRANT OPTION`: 사용자에게 권한을 부여할 수 있는 권한
-
-|
-
-**`database_name.table_name`**: 권한이 적용될 데이터베이스와 테이블
-
-```sql
--- database_name.*: database_name 데이터베이스의 모든 테이블
-GRANT privilege_type ON database_name.* TO 'username'@'host';
-
-
--- *.*: 모든 데이터베이스와 테이블
-GRANT privilege_type ON *.* TO 'username'@'host';
-```
-
-|
-
-**`username@host`**: 권한을 부여할 사용자와 호스트
-
-|
-
-## REVOKE: 권한 제거
-
-```sql
-REVOKE privilege_type ON database_name.table_name FROM 'username'@'host';
-
-
--- 예시
-REVOKE INSERT ON example.users FROM 'newuser'@'localhost';
-```
-
-> newuser로부터 example 데이터베이스의 users 테이블에 대한 INSERT 권한을 제거
-
-|
-
-## SHOW GRANTS: 권한 확인 
-
-```sql
-SHOW GRANTS FOR 'username'@'host';
-
-
--- 예시
-SHOW GRANTS FOR 'newuser'@'localhost';
-```
-
-> newuser 사용자가 가지고 있는 모든 권한을 표시
-
-|
-
-## FLUSH PRIVILEGES: 권한 테이블 변경 사항 적용 (새로고침)
-
-GRANT, REVOKE 명령어 사용 시 자동으로 권한이 적용됨
-
-일반적으로 수동으로 사용할 필요는 없음
-
-```sql
-FLUSH PRIVILEGES;
-```
-
-|
-
----
-
-|
-
-# 사용자 및 권한 관리 명령어
-
-## 사용자 생성
-
-```sql
-CREATE USER 'username'@'host' IDENTIFIED BY 'password';
-
-
--- 예시
-CREATE USER 'testuser'@'localhost' IDENTIFIED BY 'testpass';
-```
-
-> localhost에서만 접속 가능한 testuser라는 사용자를 생성하고, 비밀번호를 testpass로 설정
-
-|
-
-## 사용자 삭제
-
-```sql
-DROP USER 'username'@'host';
-
-
--- 예시
-DROP USER 'testuser'@'localhost';
-```
-
-> testuser 사용자를 삭제
-
-|
-
-## 사용자 비밀번호 변경
-
-```sql
-ALTER USER 'username'@'host' IDENTIFIED BY 'newpassword';
-
-
--- 예시
-ALTER USER 'testuser'@'localhost' IDENTIFIED BY 'newtestpass';
-```
-
-> testuser 사용자의 비밀번호를 newtestpass로 변경
-
-|
-
-## 정리
-
-```sql
--- 1. 사용자 생성
-CREATE USER 'exampleuser'@'localhost' IDENTIFIED BY 'securepassword';
-
--- 2. 데이터베이스에 대한 모든 권한 부여
-GRANT ALL PRIVILEGES ON example.* TO 'exampleuser'@'localhost';
-
--- 3. 권한 적용
-FLUSH PRIVILEGES;
-
--- 4. 사용자의 권한 확인
-SHOW GRANTS FOR 'exampleuser'@'localhost';
-
--- 5. 특정 권한 철회
-REVOKE DELETE ON example.* FROM 'exampleuser'@'localhost';
-
--- 6. 삭제된 권한을 확인
-SHOW GRANTS FOR 'exampleuser'@'localhost';
-```
-
-# Mysql 로컬 환경에서 설치 후 위의 내용 실습하기
+# Mysql 로컬 환경에서 설치 후 실습하기
 
 ## 설치
 
@@ -553,3 +386,166 @@ RIGHT JOIN orders ON customers.id = orders.customer_id;
 |
 
 # 데이터베이스 접근 제한, 사용자 권한 설정하기
+
+## 사용자 권한 명령어 (GRANT, REVOKE, SHOW GRANTS, FLUSH PRIVILEGES)
+
+### GRANT: 권한 부여
+
+```sql
+GRANT privilege_type ON database_name.table_name TO 'username'@'host';
+
+
+-- 예시
+GRANT SELECT, INSERT ON example.users TO 'newuser'@'localhost';
+```
+
+> newuser에게 example 데이터베이스의 users 테이블에 대한 SELECT, INSERT 권한을 부여
+
+|
+
+**`privilege_type`**: 부여할 권한 유형
+
+`ALL PRIVILEGES`: 모든 권한 부여
+
+`SELECT`: 테이블에서 데이터를 조회할 수 있는 권한
+
+`INSERT`: 테이블에 데이터를 삽입할 수 있는 권한
+
+`UPDATE`: 테이블의 데이터를 수정할 수 있는 권한
+
+`DELETE`: 테이블에서 데이터를 삭제할 수 있는 권한
+
+`CREATE`: 데이터베이스나 테이블을 생성할 수 있는 권한
+
+`DROP`: 데이터베이스나 테이블을 삭제할 수 있는 권한
+
+`INDEX`: 인덱스를 생성 및 삭제할 수 있는 권한
+
+`ALTER`: 테이블 구조를 변경할 수 있는 권한
+
+`GRANT OPTION`: 사용자에게 권한을 부여할 수 있는 권한
+
+|
+
+**`database_name.table_name`**: 권한이 적용될 데이터베이스와 테이블
+
+```sql
+-- database_name.*: database_name 데이터베이스의 모든 테이블
+GRANT privilege_type ON database_name.* TO 'username'@'host';
+
+
+-- *.*: 모든 데이터베이스와 테이블
+GRANT privilege_type ON *.* TO 'username'@'host';
+```
+
+|
+
+**`username@host`**: 권한을 부여할 사용자와 호스트
+
+|
+
+### REVOKE: 권한 제거
+
+```sql
+REVOKE privilege_type ON database_name.table_name FROM 'username'@'host';
+
+
+-- 예시
+REVOKE INSERT ON example.users FROM 'newuser'@'localhost';
+```
+
+> newuser로부터 example 데이터베이스의 users 테이블에 대한 INSERT 권한을 제거
+
+|
+
+### SHOW GRANTS: 권한 확인 
+
+```sql
+SHOW GRANTS FOR 'username'@'host';
+
+
+-- 예시
+SHOW GRANTS FOR 'newuser'@'localhost';
+```
+
+> newuser 사용자가 가지고 있는 모든 권한을 표시
+
+|
+
+### FLUSH PRIVILEGES: 권한 테이블 변경 사항 적용 (새로고침)
+
+GRANT, REVOKE 명령어 사용 시 자동으로 권한이 적용됨
+
+일반적으로 수동으로 사용할 필요는 없음
+
+```sql
+FLUSH PRIVILEGES;
+```
+
+|
+
+## 사용자 및 권한 관리 명령어
+
+### 사용자 생성
+
+```sql
+CREATE USER 'username'@'host' IDENTIFIED BY 'password';
+
+
+-- 예시
+CREATE USER 'testuser'@'localhost' IDENTIFIED BY 'testpass';
+```
+
+> localhost에서만 접속 가능한 testuser라는 사용자를 생성하고, 비밀번호를 testpass로 설정
+
+|
+
+### 사용자 삭제
+
+```sql
+DROP USER 'username'@'host';
+
+
+-- 예시
+DROP USER 'testuser'@'localhost';
+```
+
+> testuser 사용자를 삭제
+
+|
+
+### 사용자 비밀번호 변경
+
+```sql
+ALTER USER 'username'@'host' IDENTIFIED BY 'newpassword';
+
+
+-- 예시
+ALTER USER 'testuser'@'localhost' IDENTIFIED BY 'newtestpass';
+```
+
+> testuser 사용자의 비밀번호를 newtestpass로 변경
+
+|
+
+### 정리
+
+```sql
+-- 1. 사용자 생성
+CREATE USER 'exampleuser'@'localhost' IDENTIFIED BY 'securepassword';
+
+-- 2. 데이터베이스에 대한 모든 권한 부여
+GRANT ALL PRIVILEGES ON example.* TO 'exampleuser'@'localhost';
+
+-- 3. 권한 적용
+FLUSH PRIVILEGES;
+
+-- 4. 사용자의 권한 확인
+SHOW GRANTS FOR 'exampleuser'@'localhost';
+
+-- 5. 특정 권한 철회
+REVOKE DELETE ON example.* FROM 'exampleuser'@'localhost';
+
+-- 6. 삭제된 권한을 확인
+SHOW GRANTS FOR 'exampleuser'@'localhost';
+```
