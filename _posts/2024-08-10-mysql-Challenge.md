@@ -241,7 +241,6 @@ sudo apt install mysql-server
 # 보안 설정
 sudo mysql_secure_installation
 
-
 # MySQL 접속
 sudo mysql -u root -p
 ```
@@ -386,4 +385,162 @@ sudo mysql -u username -p example_db < example_db_backup.sql
 |
 
 # JOIN을 사용하여 여러 테이블 간 관계 설정하기
+
+```sql
+-- 테이블 생성
+
+-- 고객 테이블: id, name, email
+CREATE TABLE customers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL
+);
+
+
+-- 주문 테이블: id, customer_id, order_date, amount
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    amount DECIMAL(10, 2),
+    FOREIGN KEY (customer_id) REFERENCES customers(id)
+);
+
+
+-- 샘플 데이터 삽입
+INSERT INTO customers (name, email) VALUES ('Park', 'Park@example.com');
+INSERT INTO customers (name, email) VALUES ('Lee', 'Lee@example.com');
+INSERT INTO customers (name, email) VALUES ('Kim', 'Lee@example.com');
+
+INSERT INTO orders (customer_id, order_date, amount) VALUES (1, '2024-08-10', 10);
+INSERT INTO orders (customer_id, order_date, amount) VALUES (2, '2024-08-11', 20);
+INSERT INTO orders (customer_id, order_date, amount) VALUES (1, '2024-08-12', 400);
+INSERT INTO orders (customer_id, order_date, amount) VALUES (4, '2024-08-13', 50);
+```
+
+## INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN
+
+### INNER JOIN
+
+두 테이블 간에 일치하는 행만 반환
+
+|
+
+```sql
+-- 고객과 해당 고객들의 주문 내역을 조회
+SELECT customers.name, customers.email, orders.order_date, orders.amount
+FROM customers
+INNER JOIN orders ON customers.id = orders.customer_id;
+
+
+-- 이렇게 써도 됨
+SELECT customers.name, customers.email, orders.order_date, orders.amount
+FROM orders
+INNER JOIN customers ON customers.id = orders.customer_id;
+```
+
+|
+
+![](./assets/images/join1.png)
+
+- customers의 id와 orders의 id가 일치하는 행을 결합
+
+- 결합된 결과에서 customers 테이블의 name, email 그리고 orders 테이블의 order_date, amount를 선택하여 반환
+
+|
+
+### LEFT JOIN (LEFT OUTER JOIN)
+
+왼쪽 테이블의 모든 행을 반환하고, 오른쪽 테이블에 일치하는 행이 있으면 함께 반환
+
+일치하지 않는 오른쪽 테이블의 값은 NULL로 표시
+
+|
+
+```sql
+SELECT ~
+FROM 왼쪽테이블
+LEFT JOIN 오른쪽테이블 ON ~ = ~;
+
+
+-- 모든 고객 정보를 보여주고, 주문이 없는 고객도 함께 표시
+SELECT customers.name, customers.email, orders.order_date, orders.amount
+FROM customers
+LEFT JOIN orders ON customers.id = orders.customer_id;
+```
+
+|
+
+![](./assets/images/join2.png)
+
+- LEFT JOIN 결과
+
+- (customers의 모든 행) + (orders테이블에서 customers의 id와 orders의 id가 일치하는 행) 반환
+
+- orders에 일치하는 데이터가 없으면 orders의 컬럼들은 NULL로 채워짐
+
+|
+
+### RIGHT JOIN (RIGHT OUTER JOIN)
+
+오른쪽 테이블의 모든 행을 반환하고, 왼쪽 테이블에 일치하는 행이 있으면 함께 반환
+
+일치하지 않는 왼쪽 테이블의 값은 NULL로 표시
+
+|
+
+```sql
+SELECT ~
+FROM 오른쪽테이블
+LEFT JOIN 왼쪽테이블 ON ~ = ~;
+
+
+-- 모든 고객 정보를 보여주고, 주문이 없는 고객도 함께 표시
+SELECT customers.name, customers.email, orders.order_date, orders.amount
+FROM customers
+RIGHT JOIN orders ON customers.id = orders.customer_id;
+```
+|
+
+![RIGHT JOIN 결과](./assets/images/join3.png)
+
+- RIGHT JOIN 결과
+
+- (orders의 모든 행) + (customers테이블에서 orders의 id와 customers의 id가 일치하는 행) 반환
+
+- customers에서 일치하는 데이터가 없는 컬럼들은 NULL로 채워짐
+
+|
+
+### FULL JOIN (FULL OUTER JOIN)
+
+두 테이블의 모든 행을 반환
+
+어느 한쪽 테이블에만 일치하는 데이터가 있으면 NULL로 표시
+
+|
+
+```sql
+SELECT customers.name, customers.email, orders.order_date, orders.amount
+FROM customers
+LEFT JOIN orders ON customers.id = orders.customer_id
+
+UNION
+
+SELECT customers.name, customers.email, orders.order_date, orders.amount
+FROM customers
+RIGHT JOIN orders ON customers.id = orders.customer_id;
+```
+
+|
+
+![FULL JOIN 결과](./assets/images/join4.png)
+
+- FULL JOIN 결과
+
+
+
+
+
+
 # 데이터베이스 접근 제한, 사용자 권한 설정하기
