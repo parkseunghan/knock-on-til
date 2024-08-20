@@ -359,7 +359,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $post = fetchPost($id);
 ```
 
-> (1) 게시물 id가 있는지 확인 후 id를 intval()을 사용하여 정수로 변환 
+> (1) 삼항연산자 사용. 게시물 id가 있는지 확인 후 id를 intval()을 사용하여 정수로 변환 
 
 > id가 유효하지 않다면(NULL) 에러 메시지 출력 후 스크립트 종료
 
