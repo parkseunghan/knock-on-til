@@ -1,6 +1,6 @@
 ---
-title: "[3주차 TIL] KnockOn Bootcamp - 게시판 만들기"
-published: false
+title: "[3주차 TIL] KnockOn Bootcamp - 게시판 만들기(0) - LAMP 스택 설치"
+published: true
 ---
 
 |
@@ -16,7 +16,7 @@ sudo apt update
 sudo apt install apache2
 ```
 
-> Apache 설치 후 ec2 퍼블릭 IP 주소로 접속 하여 확인
+> Apache 설치 후 퍼블릭 IP 주소로 접속 하여 확인
 
 |
 
@@ -116,7 +116,7 @@ Disallow root login remotely? (Press y|Y for Yes, any other key for No) :
 
 |
 
-**`N`**: roo 사용자 원격 접속 허용
+**`N`**: root 사용자 원격 접속 허용
 
 |
 
@@ -179,6 +179,3 @@ sudo apt install php libapache2-mod-php php-mysql
 ---
 
 |
-
-# 게시판 만들기
-
