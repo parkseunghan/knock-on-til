@@ -5,7 +5,7 @@ published: true
 
 |
 
-# 초기 설정 파일 생성
+# 초기 설정 파일 생성 - init, config, db, functions
 
 파일에서는 init.php만 require할 수 있도록 초기 파일들 생성 후 require
 
@@ -19,13 +19,11 @@ require_once 'db.php';
 require_once 'functions.php';
 ```
 
-> require:
+> require: 필수적인 파일을 불러오지 못할 경우 *fatal error* 발생. 스크립트 실행이 중단됨
 
-> require_once:
+> include: 파일을 불러오지 못할 경우 *warning*만 출력되고 나머지 스크립트 계속 실행
 
-> include:
-
-> include_once
+> require_once, include_once: 파일이 이미 포함된 경우, 다시 포함하지 않음. 같은 파일을 여러 번 불러오는 것을 방지
 
 |
 
@@ -80,7 +78,9 @@ require_once 'init.php'
 
 |
 
-# 메인 페이지 - index.php
+# 메인 페이지 - index
+
+## config
 
 ```php
 // config.php
@@ -101,15 +101,17 @@ functions.php파일에 다음 함수 추가
 
 |
 
+## functions
+
 ```php
 // functions.php
 
 function getTotalPosts($mysqli, $query) {
-    if ($query) {
+    if ($query) { // search.php에서 다룰 예정
         $stmt = $mysqli->prepare("SELECT COUNT(*) FROM posts WHERE title LIKE ? OR content LIKE ?");
         $search_term = '%' . $query . '%';
         $stmt->bind_param("ss", $search_term, $search_term);
-    } else {
+    } else { // 이 부분
         $stmt = $mysqli->prepare("SELECT COUNT(*) FROM posts");
     }
     $stmt->execute();
@@ -121,10 +123,19 @@ function getTotalPosts($mysqli, $query) {
 }
 ```
 
-> $query: 검색어
+> $query는 search.php(검색기능)에서 코드 재사용을 위한 파라미터.
 
-> 
+> else 부분: posts의 수(전체 게시물 수)를 계산
 
+> $stmt에 쿼리 저장
+
+> execute(): 쿼리 실행
+
+> bind_result($total_posts): 쿼리 실행 결과를 $total_posts에 바인딩
+
+> fetch(): 바인딩 된 결과 가져오기. 이때 $total_posts에 총 게시물 수가 저장됨
+
+> close(): DB자원 해제
 
 |
 
@@ -136,7 +147,7 @@ function getPosts($mysqli, $offset, $post_per_page, $query) {
         $stmt = $mysqli->prepare("SELECT id, title, content, created_at, updated_at FROM posts WHERE title LIKE ? OR content LIKE ? ORDER BY created_at DESC LIMIT ?, ?");
         $search_term = '%' . $query . '%';
         $stmt->bind_param("ssii", $search_term, $search_term, $offset, $post_per_page);
-    } else {
+    } else { // 이 부분
     $stmt = $mysqli->prepare("SELECT posts.id, posts.title, posts.content, posts.created_at, posts.updated_at, posts.file_path, users.username 
                                FROM posts 
                                LEFT JOIN users ON posts.user_id = users.id 
@@ -152,6 +163,16 @@ function getPosts($mysqli, $offset, $post_per_page, $query) {
 }
 ```
 
+> $query는 search.php(검색기능)에서 코드 재사용을 위한 파라미터.
+
+> 게시물과 작성자(username)을 가져오는 쿼리 준비
+
+> LEFT JOIN: 게시물과 작성자 정보 결합
+
+> ORDER BY created_at DESC: 최신 게시물이 먼저 나오도록 내림차순 정렬(default는 ASC로, 오름차순)
+
+> LIMIT ?, ?: 페이지네이션 적용 offset만큼의 게시물을 건너뛰고, post_per_page개의 레코드를 가져옴
+
 |
 
 ```php
@@ -163,9 +184,21 @@ function truncateContent($content, $maxLength = MAX_LENGTH) {
 }
 ```
 
+> 게시물 내용, 최대 길이를 파라미터로 받음
+
+> 게시물 길이가 $maxLength보다 길면, $maxLength길이의 문자 + '...' 을 붙여서 반환
+
+> 그렇지 않으면 전체 내용 그대로 반환
+
 |
 
+## index
+
+php 부분
+
 ```php
+//index.php
+
 require_once 'init.php';
 
 $post_per_page = POST_PER_PAGE; // config.php파일에서 지정한 페이지 수
@@ -186,10 +219,100 @@ $result = getPosts($mysqli, $offset, $post_per_page, NULL);
 $mysqli->close();
 ```
 
+> getTotalPosts()와 getPosts()에서 query부분을 NULL로 넘겨줘서 무시함
+
+|
+
+html 부분
+
+여기서 `truncateContent()` 사용
+
+```php
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판</title>
+</head>
+<body>
+    <a href="index.php"><h1>게시판</h1></a>
+
+    <!-- 검색 폼 -->
+    <form method="GET" action="search.php">
+        <input type="text" name="query" placeholder="검색어를 입력하세요" required>
+        <button type="submit">검색</button>
+    </form>
+
+    <nav>
+        <a href="create_post.php">새 글 쓰기</a> |
+        <a href="user_posts.php">내가 쓴 글</a> |
+        <a href="update_profile.php">프로필 수정</a> |
+        <a href="logout.php">로그아웃</a>
+    </nav>
+
+    <hr>
+
+    <?php if ($result->num_rows > 0): ?>
+        <?php while($row = $result->fetch_assoc()): ?>
+            <h2>
+                <a href="read_post.php?id=<?php echo htmlspecialchars($row['id']); ?>">
+                    <?php echo htmlspecialchars($row['title']); ?>
+                </a>
+            </h2>
+            
+            <p>게시일: <?php echo date('Y. m. d', strtotime($row['created_at'])); ?>
+
+                <?php if ($row['updated_at']): ?>
+
+                    (수정일: <?php echo date('Y. m. d', strtotime($row['updated_at'])); ?>)
+
+                <?php endif; ?>
+            </p>
+
+            <p>작성자: <?php echo htmlspecialchars($row['username'] ?? '작성자 정보 없음'); ?></p>
+
+            <p><?php echo htmlspecialchars(truncateContent($row['content'])); ?></p>
+
+            <?php if ($row['file_path']): ?>
+                <p>첨부파일: <?php echo htmlspecialchars(basename($row['file_path'])); ?></p>
+            <?php else: ?>
+                <p>첨부파일: 없음</p>
+            <?php endif; ?>
+
+            <hr>
+        <?php endwhile; ?>
+
+    <?php else: ?>
+
+        <p>게시물이 없습니다.</p>
+
+    <?php endif; ?>
+
+    <!-- 페이지 네비게이션 -->
+    <nav>
+        <ul>
+            <?php if ($page > 1): ?>
+                <li><a href="?page=<?php echo $page - 1; ?>">이전</a></li>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                <li>
+                    <a href="?page=<?php echo $i; ?>" <?php if ($i === $page) echo 'style="font-weight:bold;"'; ?>><?php echo $i; ?></a>
+                </li>
+            <?php endfor; ?>
+
+            <?php if ($page < $total_pages): ?>
+                <li><a href="?page=<?php echo $page + 1; ?>">다음</a></li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+</body>
+</html>
+```
+
 |
 
 ---
 
 |
-
-# 
