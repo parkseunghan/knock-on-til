@@ -30,29 +30,39 @@ define('ALLOWED_EXTS', ['jpg', 'jpeg', 'png', 'gif', 'pdf']); // 업로드 허�
 
 function handleFileUpload($existing_file_path) {
     $upload_dir = UPLOAD_DIR;
-    $file_path = $existing_file_path;
+    $file_path = $existing_file_path; // 기본값: 기존 파일 경로, 새로 업로드되면 변경
     $error_message = '';
 
+    // (1)
     if (isset($_FILES['file']) && $_FILES['file']['error'] !== UPLOAD_ERR_NO_FILE) {
+
+        // (2)
         if ($_FILES['file']['error'] === UPLOAD_ERR_OK) {
             $allowed_exts = ALLOWED_EXTS;
+
+            // (3)
             $file_ext = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
             $max_file_size = MAX_FILE_SIZE; // 5MB
 
+            // (4)
             if ($_FILES['file']['size'] > $max_file_size) {
                 $error_message = "파일 용량 초과 (최대 5MB)";
             } elseif (!in_array($file_ext, $allowed_exts)) {
                 $error_message = "허용되지 않는 파일 형식입니다.";
             } else {
+
+                // (5)
                 $file_name = time() . '_' . uniqid() . '_' . basename($_FILES['file']['name']);
                 $new_file_path = $upload_dir . $file_name;
 
+                // (6)
                 if (!is_dir($upload_dir)) {
                     mkdir($upload_dir, 0777, true);
                 }
 
+                // (7)
                 if (move_uploaded_file($_FILES['file']['tmp_name'], $new_file_path)) {
-                    // 기존 파일이 있으면 삭제
+                    // (8) 기존 파일이 있으면 삭제
                     if ($existing_file_path && file_exists($existing_file_path)) {
                         unlink($existing_file_path);
                     }
@@ -67,11 +77,34 @@ function handleFileUpload($existing_file_path) {
     }
 
     return [
+        // (9)
         'file_path' => $file_path,
         'error_message' => $error_message,
     ];
 }
 ```
+
+> 기존 파일의 경로를 $existing_file_path 파라미터를 통해 받아와 $file_path에 저장
+
+> (1) 파일이 업로드 되었는지($_FILES['file'] 설정) 확인, 업로드된 파일이 없는 경우 UPLOAD_ERR_NO_FILE이 아닌지 확인
+
+> (2) 파일이 정상적으로 업로드되었는지 확인. UPLOAD_ERR_OK: 파일이 오류 없이 업로드된 상태
+
+> (3) strtolower(): 파일의 확장자를 소문자로 변환 후 $file_ext에 저장
+
+> pathinfo(): 파일 경로 정보 추출
+
+> (4) 파일 용량 초과 또는 허용되지 않는 파일인 경우 오류 메시지 설정
+
+> (5) time()과 uniqid()로 고유 파일명을 생성하여 파일명 충돌 방지
+
+> (6) 디렉토리가 존재하지 않으면 0755 권한으로 생성. true 옵션으로 필요한 상위 디렉토리도 함께 생성
+
+> (7) 업로드된 파일을, 임시 디렉토리에서 $new_file_path로 이동. 성공 시 파일 업로드 완료
+
+> (8) 업로드된 기존 파일이 있다면, unlink()함수를 사용해 삭제
+
+> (9) 파일이 업로드되지 않았거나, 파일이 없는 경우 업로드 처리를 하지 않고 기존 파일을 유지
 
 |
 
@@ -222,9 +255,45 @@ html 부분
 |
 
 ```php
+// functions
 
+function updatePost($id, $title, $content, $file_path) {
+    global $mysqli;
+    $stmt = $mysqli->prepare("UPDATE posts SET title = ?, content = ?, file_path = ? WHERE id = ?");
+    $stmt->bind_param("sssi", $title, $content, $file_path, $id);
+    $result = $stmt->execute();
+    $stmt->close();
+    return $result;
+}
 ```
 
+> 게시물 id, 제목, 내용, 파일 경로를 파라미터로 받음
+
+> bind_param(): ? 자리에 실제 값을 바인딩
+
+|
+
+```php
+// functions
+
+function fetchPost($id) {
+    global $mysqli;
+    $stmt = $mysqli->prepare("SELECT title, content, file_path, user_id FROM posts WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    return $result;
+}
+```
+
+> posts 테이블에서 제목, 내용, 파일 경로, 작성자 id를 가져옴
+
+> get_result(): 쿼리 실행 결과를 가져옴. 
+
+> fetch_assoc(): 테이블의 열을 배열의 키, 값을 배열의 값으로 가져와 &result에 저장
+
+> &result: 현재 게시물 데이터를 포함하는 배열이 됨
 
 |
 
