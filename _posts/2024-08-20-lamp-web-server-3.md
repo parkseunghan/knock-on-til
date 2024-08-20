@@ -1,20 +1,351 @@
 ---
-title: "[3주차 TIL] KnockOn Bootcamp - 게시판 만들기(3) - C R U D"
+title: "[3주차 TIL] KnockOn Bootcamp - 게시판 만들기(3) - 파일 업로드 & Create/Update"
 published: true
+---
+
+|
+
+# 파일 업로드
+
+## config
+
+```php
+// config.php
+
+define('UPLOAD_DIR', '/your_project_root_path/uploads/'); // 업로드 경로
+define('MAX_FILE_SIZE', 5 * 1024 * 1024); // 업로드 최대 허용 크기
+define('ALLOWED_EXTS', ['jpg', 'jpeg', 'png', 'gif', 'pdf']); // 업로드 허용 파일 형식
+```
+
+|
+
+## functions
+
+**`handleFileUpload()`**: 파일 업로드 함수
+
+|
+
+```php
+// functions.php
+
+function handleFileUpload($existing_file_path) {
+    $upload_dir = UPLOAD_DIR;
+    $file_path = $existing_file_path;
+    $error_message = '';
+
+    if (isset($_FILES['file']) && $_FILES['file']['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($_FILES['file']['error'] === UPLOAD_ERR_OK) {
+            $allowed_exts = ALLOWED_EXTS;
+            $file_ext = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+            $max_file_size = MAX_FILE_SIZE; // 5MB
+
+            if ($_FILES['file']['size'] > $max_file_size) {
+                $error_message = "파일 용량 초과 (최대 5MB)";
+            } elseif (!in_array($file_ext, $allowed_exts)) {
+                $error_message = "허용되지 않는 파일 형식입니다.";
+            } else {
+                $file_name = time() . '_' . uniqid() . '_' . basename($_FILES['file']['name']);
+                $new_file_path = $upload_dir . $file_name;
+
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+
+                if (move_uploaded_file($_FILES['file']['tmp_name'], $new_file_path)) {
+                    // 기존 파일이 있으면 삭제
+                    if ($existing_file_path && file_exists($existing_file_path)) {
+                        unlink($existing_file_path);
+                    }
+                    $file_path = $new_file_path;
+                } else {
+                    $error_message = "파일 업로드 실패!";
+                }
+            }
+        } else {
+            $error_message = "파일 업로드 중 오류가 발생했습니다.";
+        }
+    }
+
+    return [
+        'file_path' => $file_path,
+        'error_message' => $error_message,
+    ];
+}
+```
+
+|
+
 ---
 
 |
 
 # 게시물 생성: create_post.php
 
+## functions
+
+**`handleFileUpload()`**: 파일 업로드
+
+**`createPost()`**: 게시물 추가
+
+|
+
+```php
+// functions.php
+
+function createPost($title, $content, $file_path) {
+    global $mysqli;
+    $stmt = $mysqli->prepare("INSERT INTO posts (title, content, file_path, user_id) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("sssi", $title, $content, $file_path, $_SESSION['id']);
+    $result = $stmt->execute();
+    $stmt->close();
+    return $result;
+}
+```
+
+> 게시물 제목, 내용, 업로드된 파일 경로를 파라미터로 받음
+
+> global 키워드를 사용해 전역 변수 $mysqli 사용
+
+> title, content, file_path, user_id열에 데이터 삽입
+
+> bind_param()에서 s와 i는 s(string), i(integer)를 의미
+
+|
+
+## create_post
+
+php 부분
+
+```php
+// create_post.php
+
+require_once 'init.php';
+
+$error_message = '';
+$file_error_message = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { // (1) POST 요청으로 폼 데이터를 제출했는지 확인
+
+    // (2)
+    if (!empty($_POST['title']) && !empty($_POST['content'])) {
+        $title = trim($_POST['title']);
+        $content = trim($_POST['content']);
+
+        // 파일 업로드 처리
+        $file_result = handleFileUpload(null); // 새 게시물이라 기존 파일 없음
+        if (is_array($file_result)) {
+            $file_path = $file_result['file_path'];
+            $file_error_message = $file_result['error_message'];
+        }
+
+        if (empty($file_error_message)) {
+            // 게시물 생성
+            if (createPost($title, $content, $file_path)) {
+                echo "<script>alert('게시물이 생성되었습니다.'); window.location.href='index.php';</script>";
+                exit();
+            } else {
+                $error_message = "게시물 생성 실패!";
+            }
+        }
+    } else {
+        $error_message = "제목과 내용을 입력해야 합니다.";
+    }
+}
+```
+
+> (1) POST 방식으로 데이터를 처리했는지 확인
+
+> (2) title과 content가 비어있지 않은지 확인.
+
+> trim(): 입력 데이터 앞뒤 공백 제거
+
+> (3) 파일 업로드 처리. 파라미터는 update_post.php에서 필요
+
+> handleFileUpload(): 파일 업로드 처리 후, 성공시 $file_path에 file_path 경로 저장 또는 실패시  $file_error_message에 error_message 저장
+
+> $file_error_message가 비어있다면(성공), createPost함수로 새 게시물 데이터를 데이터베이스에 삽입 후 성공 메시지 알림 후 index.php로 리다이렉트
+
+|
+
+html 부분
+
+```php
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시물 작성</title>
+</head>
+<body>
+    <a href="index.php">메인으로</a>
+    <h1>게시물 작성</h1>
+    <hr>
+    <form method="POST" action="" enctype="multipart/form-data">
+        <label for="title"><strong>제목:</strong></label>
+        <input type="text" id="title" name="title" required>
+        <br>
+        <label for="content">내용:</label>
+        <textarea id="content" name="content" required></textarea>
+        <br>
+        <label for="file">파일 업로드(최대 5MB):</label>
+        <input type="file" id="file" name="file">
+        <br>
+        <?php if ($error_message): ?>
+            <p style="color: red;"><?php echo htmlspecialchars($error_message); ?></p>
+        <?php endif; ?>
+        <?php if ($file_error_message): ?>
+            <p style="color: red;"><?php echo htmlspecialchars($file_error_message); ?></p>
+        <?php endif; ?>
+        <button type="submit">작성</button>
+    </form>
+</body>
+</html>
+```
+
+|
+
+---
+
+|
+
+# 게시물 수정: update_post.php
+
+## functions
+
+**`handleFileUpload()`**: 파일 업로드
+
+**`fetchPost()`**: 게시물 데이터 가져오기
+
+**`updatePost()`**: 게시물 수정
+
+|
+
 ```php
 
 ```
 
 
-# 게시물 읽기: read_post.php
+|
 
+## update_post
 
-# 게시물 수정: update_post.php
+php 부분
 
-# 게시물 삭제: delete_post.php
+```php
+require_once 'init.php';
+
+// (1) 게시물 ID 검증
+$id = isset($_GET['id']) && !is_array($_GET['id']) ? intval($_GET['id']) : null;
+if ($id === null) {
+    echo "잘못된 요청입니다.";
+    exit();
+}
+
+// (2) 게시물 데이터 가져오기
+$post = fetchPost($id);
+if (!$post) {
+    echo "게시물이 존재하지 않습니다.";
+    exit();
+}
+
+// (3) 로그인한 사용자가 게시물의 작성자인지 확인
+if ($_SESSION['id'] !== $post['user_id']) {
+    echo "게시물 수정 권한이 없습니다.";
+    exit();
+}
+
+$file_path = $post['file_path']; // 기존의 파일 경로 초기화
+$error_message = '';
+$file_error_message = '';
+
+// (4)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['title']) && !empty($_POST['content'])) {
+        $title = trim($_POST['title']);
+        $content = trim($_POST['content']);
+
+        // (5) 파일 업로드 처리
+        $file_result = handleFileUpload($file_path);
+        if (is_array($file_result)) {
+            $file_path = $file_result['file_path'];
+            $file_error_message = $file_result['error_message'];
+        }
+
+        if (empty($file_error_message)) {
+            // (6) 게시물 업데이트
+            if (updatePost($id, $title, $content, $file_path)) {
+                echo "<script>alert('게시물이 수정되었습니다.'); window.location.href='index.php';</script>";
+                exit();
+            } else {
+                $error_message = "게시물 수정 실패!";
+            }
+        }
+    } else {
+        $error_message = "제목과 내용을 입력해야 합니다.";
+    }
+}
+
+// (7) 게시물 데이터 재조회
+$post = fetchPost($id);
+```
+
+> (1) 게시물 id가 있는지 확인 후 id를 intval()을 사용하여 정수로 변환 
+
+> id가 유효하지 않다면(NULL) 에러 메시지 출력 후 스크립트 종료
+
+> (2) fetchPost($id): id에 해당하는 게시물 데이터를 DB에서 가져오기
+
+> (3) 현재 로그인한 사용자의 id와 게시물 작성자의 id가 일치하는지 확인
+
+> (4) POST 요청으로 호출되었는지 확인 후 제목과 내용이 비어있지 않은지 확인
+
+> (5) handleFileUpload($file_path): 파일 업로드 처리. 파라미터로 기존 파일의 경로를 넘겨줌
+
+> (6) 파일 업로드에 문제가 없으면 updatePost()함수로 게시물 수정
+
+> (7) 수정된 최신 게시물 데이터를 다시 가져옴
+
+|
+
+html부분
+
+```php
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시물 수정</title>
+</head>
+<body>
+    <a href="index.php">메인으로</a>
+    <h1>게시물 수정</h1>
+    <hr>
+    <form method="POST" action="" enctype="multipart/form-data">
+        <label for="title"><strong>제목:</strong></label>
+        <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($post['title']); ?>" required>
+        <br>
+        <label for="content">내용:</label>
+        <textarea id="content" name="content" required><?php echo htmlspecialchars($post['content']); ?></textarea>
+        <br>
+        <label for="file">파일 업로드(최대 5MB):</label>
+        <input type="file" id="file" name="file">
+        <br>
+        <?php if ($error_message): ?>
+            <p style="color: red;"><?php echo htmlspecialchars($error_message); ?></p>
+        <?php endif; ?>
+        <?php if ($file_error_message): ?>
+            <p style="color: red;"><?php echo htmlspecialchars($file_error_message); ?></p>
+        <?php endif; ?>
+        <button type="submit">수정</button>
+    </form>
+</body>
+</html>
+```
+
+|
+
+---
+
+|

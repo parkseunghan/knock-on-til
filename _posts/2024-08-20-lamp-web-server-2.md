@@ -1,5 +1,5 @@
 ---
-title: "[3주차 TIL] KnockOn Bootcamp - 게시판 만들기(2) - 초기 설정 및 메인 화면"
+title: "[3주차 TIL] KnockOn Bootcamp - 게시판 만들기(2) - 초기 설정 & 메인 화면"
 published: true
 ---
 
@@ -31,7 +31,9 @@ require_once 'functions.php';
 
 |
 
-## MySQL 연결
+# MySQL 연결
+
+## config
 
 config.php파일에서 DB 설정
 
@@ -45,6 +47,8 @@ define('DB_NAME', 'your_dbname');
 ```
 
 |
+
+## db
 
 db.php에서 MySQL 연결
 
@@ -61,6 +65,8 @@ if ($mysqli->connect_error) {
 ```
 
 |
+
+## index
 
 index.php에서 init.php파일 require
 
@@ -91,7 +97,7 @@ define('MAX_LENGTH', 100); // 미리보기 내용
 
 |
 
-functions.php파일에 다음 함수 추가
+## functions
 
 **`getTotalPosts()`**: 총 게시물 수를 계산
 
@@ -100,8 +106,6 @@ functions.php파일에 다음 함수 추가
 **`truncateContent()`**: 게시물 내용(content) 미리보기
 
 |
-
-## functions
 
 ```php
 // functions.php
@@ -178,7 +182,6 @@ function getPosts($mysqli, $offset, $post_per_page, $query) {
 ```php
 // functions.php
 
-// 게시물 내용 미리보기
 function truncateContent($content, $maxLength = MAX_LENGTH) {
     return strlen($content) > $maxLength ? substr($content, 0, $maxLength) . '...' : $content;
 }
