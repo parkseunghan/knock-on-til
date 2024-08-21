@@ -9,7 +9,7 @@ baseurl: "/knock-on-til"
 
 source: .
 destination: ./_site
-# permalink: /:title
+permalink: /:title
 paginate: 7
 paginate_path: /page/:num/
 
@@ -26,7 +26,6 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-      
 permalink:
   - /:title
   - /writeups/:title
