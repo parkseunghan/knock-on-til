@@ -1,4 +1,5 @@
 ---
+layout: post
 title: "[Writeup] Webhacking.kr - old-14"
 published: true
 ---
