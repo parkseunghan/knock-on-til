@@ -1,6 +1,7 @@
 ---
+layout: writeup
 title: "[Writeup] Webhacking.kr - old-14"
-published: false
+published: true
 ---
 
 |
