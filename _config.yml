@@ -20,11 +20,12 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-
-collections:
-  writeups:
-    output: true
-    permalink: /:title/
+  - 
+    scope:
+      path: "_writeups"
+      type: "posts"
+    values:
+      layout: "post"
 
 
 
