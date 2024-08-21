@@ -22,7 +22,7 @@ defaults:
       layout: "post"
   - 
     scope:
-      path: "_writeups"
+      path: "writeups"
       type: "posts"
     values:
       layout: "post"
