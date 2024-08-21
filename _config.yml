@@ -20,6 +20,18 @@ defaults:
       type: "posts"
     values:
       layout: "post"
+  -
+    scope:
+      path: ""
+      type: "writeups"
+    values:
+      layout: "writeup"
+
+# collections:
+#   writeups:
+#     output: true
+#     permalink: /writeups/:path/
+
 
 future: true
 plugins:
