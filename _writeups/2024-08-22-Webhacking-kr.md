@@ -2,6 +2,7 @@
 layout: writeup
 title: "[Writeup] Webhacking.kr - old-14"
 published: true
+date: 2024-08-22 12:00:00 +0000
 ---
 
 |
