@@ -20,12 +20,13 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-  - 
+  -
     scope:
       path: "_writeups"
       type: "posts"
     values:
       layout: "post"
+
 permalink:
   - /:title
   - /writeups/:title
