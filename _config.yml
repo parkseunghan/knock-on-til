@@ -26,7 +26,10 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-
+      
+permalink:
+  - /:title
+  - /writeups/:title
 
 
 future: true
