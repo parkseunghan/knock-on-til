@@ -3,7 +3,7 @@ layout: default
 ---
 
 <ul>
-    {% assign all_posts = site.posts | concat: site.writeup %}
+    {% assign all_posts = site.posts | concat: site.writeups %}
     {% assign sorted_posts = all_posts | sort: 'date' | reverse %}
 
     {% for post in paginator.posts %}
